@@ -2,7 +2,19 @@
 
 Chat-BTH คือผู้ช่วย AI แบบใช้งานส่วนตัวบนเครื่อง ใช้ Ollama เป็นค่าเริ่มต้น มี Web UI สำหรับแชทและสร้างเว็บไซต์/แดชบอร์ด และมี Telegram bot สำหรับใช้งานจากมือถือ
 
-เอกสารนี้ตรวจสอบกับโค้ดในโปรเจกต์ ณ วันที่ 30 กันยายน 2026
+เอกสารนี้อัปเดตจากโปรเจกต์จริงบน Dell ณ วันที่ 10 ตุลาคม 2026
+
+## สถานะปัจจุบัน
+
+- Hermes Agent Gateway ทำงานอยู่และเชื่อมต่อ Telegram ได้
+- โมเดลหลักของ Hermes Agent คือ `gemma3:4b`
+- ตั้ง `context_length` และ `ollama_num_ctx` ไว้ที่ 65,536 tokens
+- Ollama พบโมเดลที่ติดตั้ง 11 รายการ
+- Hermes Doctor ไม่พบ Security Advisory
+- Regression tests ล่าสุด: 130 รายการ, ผ่าน 128 รายการ, ล้มเหลว 1 รายการ และ error 1 รายการ
+- Python compile ผ่าน; การตรวจ JavaScript ยังรันไม่ได้เพราะเครื่อง Dell ไม่มี Node.js
+
+หมายเหตุ: ผลทดสอบที่ไม่ผ่านทั้งสองรายการเกิดจากขั้นตอนตรวจ `node --check` แต่ไม่มีคำสั่ง `node` ในเครื่อง ไม่ใช่ปัญหาจาก Ollama หรือโมเดล
 
 ## ความสามารถปัจจุบัน
 
@@ -44,12 +56,12 @@ Chat-BTH คือผู้ช่วย AI แบบใช้งานส่ว�
 
     python -m venv venv
     ./venv/bin/pip install -r requirements.txt
-    ollama pull hermes3:8b
+    ollama pull gemma3:4b
 
 สร้างไฟล์ .env ที่โฟลเดอร์หลัก:
 
     OLLAMA_URL=http://127.0.0.1:11434/api/generate
-    MODEL_NAME=hermes3:8b
+    MODEL_NAME=gemma3:4b
     WEB_HOST=127.0.0.1
     WEB_PORT=8080
     # ไฟล์โมเดล Piper ที่ดาวน์โหลด/เก็บไว้ในเครื่องแล้ว
@@ -101,6 +113,21 @@ Catalog/Library รองรับค้นหา เรียงลำดับ
 
 ## โมเดลและ provider
 
+### เหตุผลที่เลือก `gemma3:4b` บน VRAM 8 GB
+
+Hermes Agent บังคับให้โมเดลมี Context Window อย่างน้อย 64K tokens หากใช้ `deepseek-r1:7b-40k` จะถูกปฏิเสธทันที เพราะโมเดลถูกประกาศไว้เพียง 40,960 tokens แม้จะตั้งค่า Ollama สูงกว่านั้นก็ตาม
+
+จึงเลือก `gemma3:4b` เป็นจุดสมดุลสำหรับการ์ด VRAM 8 GB ด้วยเหตุผลดังนี้:
+
+1. โมเดลขนาด 4B ใช้พื้นที่น้ำหนักโมเดลน้อยกว่า 7B ทำให้เหลือ VRAM สำหรับ KV cache ซึ่งเป็นส่วนสำคัญของ Context Window ขนาด 65K
+2. ตั้งค่า `context_length: 65536` และ `ollama_num_ctx: 65536` ให้สอดคล้องกับข้อกำหนดขั้นต่ำของ Hermes Agent
+3. ลดโอกาส Out Of Memory เมื่อเทียบกับการใช้โมเดล 7B ที่ Context เท่ากัน โดยยังคงความเร็วตอบสนองและความเสถียรไว้ได้ดีกว่าใน VRAM 8 GB
+4. เหมาะกับงานสนทนา ภาษาไทย และงานสรุป/วิเคราะห์ที่ต้องอ่านบริบทยาวบนเครื่องภายใน
+
+ค่า 65K เป็นเพดานบริบทที่ตั้งค่าไว้ ไม่ได้หมายความว่าทุกคำขอจะใช้ VRAM เต็มจำนวนเท่ากัน การใช้จริงขึ้นอยู่กับความยาว prompt, จำนวน token ที่ตอบกลับ, quantization และ KV cache ของ Ollama จึงควรตรวจ `ollama ps` และ `nvidia-smi` ควบคู่กัน หากพบ OOM ให้ลด `ollama_num_ctx` เป็น 49152 หรือ 32768
+
+ข้อจำกัดที่ต้องทราบ: `gemma3:4b` ใน Ollama ปัจจุบันไม่รองรับ Tools ผ่าน custom OpenAI-compatible endpoint จึงตั้ง `platform_toolsets.telegram: []` ไว้ เพื่อให้ Telegram ตอบข้อความได้เสถียร หากต้องการใช้ Tools ให้เลือกโมเดลที่รองรับ Tools และมี Context อย่างน้อย 64K
+
 โมเดลเริ่มต้นมาจาก MODEL_NAME และ Web UI อ่านรายชื่อโมเดลที่ติดตั้งใน Ollama สร้างโมเดลจาก Modelfile ได้ด้วย:
 
     ollama create hermes-agent -f Modelfile
@@ -117,13 +144,13 @@ Google AI Studio ใช้ native generateContent API โดยเลือก�
 | ตัวแปร | ค่าเริ่มต้น | หน้าที่ |
 | --- | --- | --- |
 | OLLAMA_URL | http://localhost:11434/api/generate | URL Ollama |
-| MODEL_NAME | hermes-agent | โมเดลหลัก |
+| MODEL_NAME | gemma3:4b | โมเดลหลักของ Chat-BTH |
 | WEB_HOST / WEB_PORT | 127.0.0.1 / 8080 | ที่อยู่ Web server |
 | HERMES_DB_PATH | data/chat_bth.db | ตำแหน่ง SQLite |
 | HERMES_WORKSPACE_ROOT | data/workspaces | ตำแหน่งไฟล์ Build |
 | HERMES_WEB_TOKEN | ไม่ตั้งค่า | token ป้องกัน Web API |
 | HERMES_RUN_COMMANDS | python,python3,node,npm,pytest | allowlist คำสั่ง Build |
-| NUM_CTX / NUM_THREAD / NUM_GPU | 4096 / 4 / 20 | ปรับทรัพยากร Ollama |
+| NUM_CTX / NUM_THREAD / NUM_GPU | 40960 / 4 / 20 | ปรับทรัพยากร Ollama ของ Web UI เดิม; Hermes Agent ใช้ `ollama_num_ctx=65536` ใน `~/.hermes/config.yaml` |
 | TEMPERATURE | 0.7 | ความสุ่มของคำตอบ |
 | MAX_OUTPUT_TOKENS | 512 | ความยาวคำตอบทั่วไป |
 | HERMES_PIPER_MODEL / HERMES_PIPER_MODEL_TH | ไม่ตั้งค่า | ไฟล์โมเดล `.onnx` ของ Piper สำหรับสร้างเสียง local (`_TH` มีผลกับคำขอภาษาไทย) |
@@ -148,7 +175,7 @@ Google AI Studio ใช้ native generateContent API โดยเลือก�
     ./venv/bin/python -m unittest discover -s tests -v
     ./venv/bin/python -m tests.preview_fixture
 
-ผลตรวจสอบล่าสุด: JavaScript syntax ผ่าน และ automated tests 127 รายการผ่านทั้งหมด Fixture อยู่ที่ http://127.0.0.1:8092 และหยุดด้วย Ctrl+C
+ผลตรวจสอบล่าสุดบน Dell (10 ตุลาคม 2026): Python compile ผ่าน, automated tests 130 รายการ โดยผ่าน 128 รายการ และไม่ผ่าน 2 รายการเนื่องจากไม่มี Node.js สำหรับ `node --check` ส่วน Hermes Doctor รายงานว่า Gateway, Python environment, configuration และ Ollama connectivity ใช้งานได้
 
 ## โครงสร้างโปรเจกต์
 
