@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hermes.edit-contract/v1",
+  "title": "Hermes Structured Editing Response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "kind", "message", "requires_approval"],
+  "properties": {
+    "schema": {"const": "hermes.edit-contract/v1"},
+    "kind": {"enum": ["answer", "clarification", "proposal"]},
+    "message": {"type": "string", "minLength": 1},
+    "requires_approval": {"const": true},
+    "patch": {"$ref": "#/$defs/patch"}
+  },
+  "$defs": {
+    "operation": {"type": "object", "additionalProperties": false, "required": ["op", "target_node_id"], "properties": {"op": {"enum": ["set_text", "set_attribute", "set_style", "insert_node", "remove_node", "move_node"]}, "target_node_id": {"type": "string", "pattern": "^node-[0-9a-f]{16}$"}, "value": {}}},
+    "patch": {"type": "object", "additionalProperties": false, "required": ["patch_id", "base_revision", "summary", "operations"], "properties": {"patch_id": {"type": "string"}, "base_revision": {"type": "integer", "minimum": 1}, "summary": {"type": "string"}, "operations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/operation"}}}}
+  }
+}

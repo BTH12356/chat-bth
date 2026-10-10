@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hermes.guided-conversation/v1",
+  "title": "Hermes Guided Conversation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "session_id", "form_id", "status", "values", "asked", "summary"],
+  "properties": {
+    "schema": {"const": "hermes.guided-conversation/v1"},
+    "session_id": {"type": "string", "minLength": 8},
+    "form_id": {"type": "string"},
+    "status": {"enum": ["collecting", "review", "confirmed"]},
+    "values": {"type": "object"},
+    "asked": {"type": "array", "items": {"type": "string"}},
+    "question": {"$ref": "#/$defs/question"},
+    "summary": {"type": "array", "items": {"$ref": "#/$defs/summary"}},
+    "clarification": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "question": {"type": "object", "additionalProperties": false, "required": ["id", "field_id", "topic", "prompt", "reason", "kind", "options", "required", "clarification"], "properties": {"id": {"type": "string"}, "field_id": {"type": "string"}, "topic": {"type": "string"}, "prompt": {"type": "string"}, "reason": {"type": "string"}, "kind": {"enum": ["text", "select", "multi_select", "boolean"]}, "options": {"type": "array", "items": {"type": "string"}}, "suggested": {}, "required": {"type": "boolean"}, "clarification": {"type": "boolean"}}},
+    "summary": {"type": "object", "additionalProperties": false, "required": ["field_id", "label", "value", "editable"], "properties": {"field_id": {"type": "string"}, "label": {"type": "string"}, "value": {}, "editable": {"type": "boolean"}}}
+  }
+}

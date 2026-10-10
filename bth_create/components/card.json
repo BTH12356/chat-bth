@@ -1,0 +1,1 @@
+{"id":"card","version":"1.0.0","type":"ui","capabilities":["summary_card","status_display"],"dependencies":[],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

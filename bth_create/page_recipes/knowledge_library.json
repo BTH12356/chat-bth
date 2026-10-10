@@ -1,0 +1,1 @@
+{"id":"knowledge_library","version":"1.0.0","label":"คลังความรู้","description":"ชั้นหนังสือและองค์ความรู้พร้อมหน้าปก ค้นหา และเรียงลำดับ","blocks":["page_header","library_toolbar","knowledge_shelf","featured_resource"]}

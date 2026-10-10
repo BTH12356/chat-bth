@@ -1,0 +1,1 @@
+{"id":"contact_form","version":"1.0.0","type":"feature","capabilities":["contact_fields","form_validation"],"dependencies":["site_shell"],"compatible_blueprints":["website.landing.v1","website.company.v1","website.portfolio.v1","website.catalog.v1"],"status":"verified"}

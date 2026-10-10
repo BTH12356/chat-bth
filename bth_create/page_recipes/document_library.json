@@ -1,0 +1,1 @@
+{"id":"document_library","version":"1.0.0","label":"กฎระเบียบและเอกสาร","description":"คลังเอกสารและ PDF พร้อมหมวดหมู่ ค้นหา และข้อมูลเวอร์ชัน","blocks":["page_header","document_search","document_categories","document_list"]}

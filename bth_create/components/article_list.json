@@ -1,0 +1,1 @@
+{"id":"article_list","version":"1.0.0","type":"ui","capabilities":["article_cards","content_index"],"dependencies":["site_shell"],"compatible_blueprints":["website.content.v1"],"status":"verified"}

@@ -1,0 +1,1 @@
+{"id":"analytics","version":"1.0.0","type":"feature","capabilities":["metrics","summary_reports"],"dependencies":["api_client","job_queue"],"compatible_blueprints":["dashboard.internal.v1"],"status":"experimental"}

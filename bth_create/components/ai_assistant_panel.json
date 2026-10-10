@@ -1,0 +1,1 @@
+{"id":"ai_assistant_panel","version":"1.0.0","type":"feature","capabilities":["log_analysis","error_assistance","system_summary"],"dependencies":["api_client","job_queue"],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

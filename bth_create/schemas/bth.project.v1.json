@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bth.project/v1",
+  "title": "BTH Project Spec v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "project", "blueprint", "theme", "modules", "network", "auth", "ai", "density", "language"],
+  "properties": {
+    "schema": {"const": "bth.project/v1"},
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 120},
+        "type": {"enum": ["internal_dashboard", "website"]}
+      }
+    },
+    "blueprint": {"$ref": "#/$defs/catalogReference"},
+    "theme": {"$ref": "#/$defs/catalogReference"},
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/identifier"}
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope"],
+      "properties": {"scope": {"enum": ["local", "internet", "both"]}}
+    },
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {"enabled": {"type": "boolean"}}
+    },
+    "ai": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "capabilities"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "capabilities": {"type": "array", "maxItems": 20, "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+        "autonomy": {"enum": ["approval_required", "assisted", "autonomous"], "default": "approval_required"}
+      }
+    },
+    "density": {"enum": ["compact", "comfortable"]},
+    "navigation": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["tabs"],
+      "properties": {"tabs": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/navigationTab"}}}
+    },
+    "appearance": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["color_tone"],
+      "properties": {"color_tone": {"enum": ["blue", "green", "purple", "orange", "neutral"]}}
+    },
+    "language": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$"}
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^[a-z0-9]+([._-][a-z0-9]+)*$"
+    },
+    "catalogReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {"id": {"$ref": "#/$defs/identifier"}}
+    },
+    "navigationTab": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 60},
+        "slug": {"anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]},
+        "page_type": {"enum": ["home", "about", "policy", "document_library", "knowledge_library", "product_catalog", "service", "news", "contact", "standard"], "default": "standard"}
+      }
+    }
+  }
+}

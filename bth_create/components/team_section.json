@@ -1,0 +1,1 @@
+{"id":"team_section","version":"1.0.0","type":"ui","capabilities":["team_profiles"],"dependencies":["site_shell"],"compatible_blueprints":["website.company.v1"],"status":"verified"}

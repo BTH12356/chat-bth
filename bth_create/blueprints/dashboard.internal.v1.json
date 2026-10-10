@@ -1,0 +1,58 @@
+{
+  "id": "dashboard.internal.v1",
+  "version": "1.0.0",
+  "name": "Internal Dashboard",
+  "type": "internal_dashboard",
+  "description": "A local-first operational dashboard for monitoring workers, jobs, models, and AI assistance.",
+  "supported_modules": [
+    "worker_monitor",
+    "gpu_monitor",
+    "job_queue",
+    "model_manager",
+    "user_management",
+    "file_manager",
+    "ai_assistant",
+    "analytics"
+  ],
+  "required_modules": ["worker_monitor", "job_queue"],
+  "optional_modules": [
+    "gpu_monitor",
+    "model_manager",
+    "user_management",
+    "file_manager",
+    "ai_assistant",
+    "analytics"
+  ],
+  "dependencies": [
+    {"module": "gpu_monitor", "requires": ["worker_monitor"]},
+    {"module": "model_manager", "requires": ["worker_monitor"]},
+    {"module": "ai_assistant", "requires": ["job_queue"]},
+    {"module": "analytics", "requires": ["job_queue"]}
+  ],
+  "incompatible_combinations": [],
+  "required_configuration": [
+    "project_name",
+    "network_scope",
+    "authentication",
+    "theme",
+    "language",
+    "density"
+  ],
+  "required_permissions": ["dashboard.read"],
+  "supported_network_modes": ["local", "internet", "both"],
+  "supported_ai_capabilities": [
+    "log_analysis",
+    "error_assistance",
+    "system_summary"
+  ],
+  "default_component_mapping": {
+    "worker_monitor": {"id": "worker_monitor"},
+    "gpu_monitor": {"id": "gpu_monitor"},
+    "job_queue": {"id": "job_queue"},
+    "model_manager": {"id": "model_manager"},
+    "user_management": {"id": "user_management"},
+    "file_manager": {"id": "file_manager"},
+    "ai_assistant": {"id": "ai_assistant_panel"},
+    "analytics": {"id": "analytics"}
+  }
+}

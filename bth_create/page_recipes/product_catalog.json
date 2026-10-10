@@ -1,0 +1,1 @@
+{"id":"product_catalog","version":"1.0.0","label":"สินค้าและบริการ","description":"แค็ตตาล็อกสินค้าพร้อมภาพ หมวดหมู่ และหน้ารายละเอียด","blocks":["page_header_image","catalog_filters","product_grid","call_to_action"]}

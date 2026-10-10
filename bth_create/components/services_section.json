@@ -1,0 +1,1 @@
+{"id":"services_section","version":"1.0.0","type":"ui","capabilities":["service_cards"],"dependencies":["site_shell"],"compatible_blueprints":["website.company.v1"],"status":"verified"}

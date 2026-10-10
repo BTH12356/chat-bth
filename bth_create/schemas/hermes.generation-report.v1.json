@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hermes.generation-report/v1",
+  "title": "Hermes Generation Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "frozen_spec_id", "source_of_truth", "artifacts", "page_paths", "node_ids", "checked_references", "content", "structure", "theme"],
+  "properties": {
+    "status": {"const": "generated"},
+    "frozen_spec_id": {"type": "string"},
+    "source_of_truth": {"const": "html-css-js"},
+    "artifacts": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["path", "kind", "bytes"], "properties": {"path": {"type": "string"}, "kind": {"enum": ["html", "css", "javascript", "json", "asset"]}, "bytes": {"type": "integer", "minimum": 0}}}},
+    "page_paths": {"type": "array", "items": {"type": "string"}},
+    "node_ids": {"type": "array", "items": {"type": "string"}},
+    "checked_references": {"type": "array", "items": {"type": "string"}}
+    ,"content": {"type": "object", "additionalProperties": {"type": "object"}},
+    "structure": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+    "theme": {"type": "object", "additionalProperties": {"type": "string"}}
+  }
+}

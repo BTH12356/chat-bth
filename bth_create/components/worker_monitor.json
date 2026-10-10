@@ -1,0 +1,1 @@
+{"id":"worker_monitor","version":"1.0.0","type":"feature","capabilities":["worker_status","worker_health"],"dependencies":["api_client"],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

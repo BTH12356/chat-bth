@@ -1,0 +1,1 @@
+{"id":"window","version":"1.0.0","type":"ui","capabilities":["window_chrome","window_layout"],"dependencies":[],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

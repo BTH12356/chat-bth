@@ -1,0 +1,1 @@
+{"id":"gpu_monitor","version":"1.0.0","type":"feature","capabilities":["gpu_status","temperature","utilization","memory_usage"],"dependencies":["api_client"],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

@@ -1,0 +1,1 @@
+{"id":"hero","version":"1.0.0","type":"ui","capabilities":["headline","call_to_action"],"dependencies":["site_shell"],"compatible_blueprints":["website.landing.v1","website.company.v1","website.portfolio.v1","website.catalog.v1","website.content.v1"],"status":"verified"}

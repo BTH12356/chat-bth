@@ -1,0 +1,1 @@
+{"id":"news","version":"1.0.0","label":"ข่าวสารและบทความ","description":"ข่าว กิจกรรม และบทความเรียงตามวันที่","blocks":["page_header","featured_article","article_grid","newsletter"]}

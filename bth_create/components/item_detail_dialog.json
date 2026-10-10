@@ -1,0 +1,1 @@
+{"id":"item_detail_dialog","version":"1.0.0","type":"ui","capabilities":["item_details","topic_link","document_link"],"dependencies":["item_catalog"],"compatible_blueprints":["catalog.library.v1","catalog.documents.v1","catalog.products.v1","catalog.media.v1","catalog.learning.v1"],"status":"verified"}

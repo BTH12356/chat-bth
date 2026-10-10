@@ -1,0 +1,1 @@
+{"id":"file_manager","version":"1.0.0","type":"feature","capabilities":["file_listing","file_upload"],"dependencies":["auth"],"compatible_blueprints":["dashboard.internal.v1"],"status":"experimental"}

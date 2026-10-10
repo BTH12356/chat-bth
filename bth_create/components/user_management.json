@@ -1,0 +1,1 @@
+{"id":"user_management","version":"1.0.0","type":"feature","capabilities":["user_roles","user_permissions"],"dependencies":["auth"],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

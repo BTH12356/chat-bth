@@ -1,0 +1,1 @@
+{"id":"page_composer","version":"1.0.0","type":"feature","capabilities":["multi_page_composition","page_recipes","content_blocks","route_generation"],"dependencies":["site_shell"],"compatible_blueprints":["website.corporate.v1","website.organization.v1","website.retail.v1","website.services.v1","website.knowledge.v1"],"status":"verified"}

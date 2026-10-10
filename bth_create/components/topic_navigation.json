@@ -1,0 +1,1 @@
+{"id":"topic_navigation","version":"1.0.0","type":"ui","capabilities":["topic_filter","topic_links"],"dependencies":["item_catalog"],"compatible_blueprints":["catalog.library.v1","catalog.documents.v1","catalog.products.v1","catalog.media.v1","catalog.learning.v1"],"status":"verified"}

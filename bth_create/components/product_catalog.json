@@ -1,0 +1,1 @@
+{"id":"product_catalog","version":"1.0.0","type":"feature","capabilities":["product_cards","category_display"],"dependencies":["site_shell"],"compatible_blueprints":["website.catalog.v1"],"status":"verified"}

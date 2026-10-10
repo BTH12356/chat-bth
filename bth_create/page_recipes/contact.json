@@ -1,0 +1,1 @@
+{"id":"contact","version":"1.0.0","label":"ติดต่อ","description":"ข้อมูลติดต่อ แผนที่ เวลาให้บริการ และแบบฟอร์ม","blocks":["page_header","contact_cards","map_panel","contact_form"]}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hermes.export/v1",
+  "type": "object",
+  "required": ["schema", "entry", "files", "security"],
+  "properties": {
+    "schema": {"const": "hermes.export/v1"},
+    "entry": {"const": "index.html"},
+    "files": {"type": "array", "items": {"type": "string"}},
+    "security": {"type": "object"}
+  }
+}

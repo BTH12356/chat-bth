@@ -1,0 +1,24 @@
+{
+  "id": "internal_dashboard.v1",
+  "version": "1.0.0",
+  "fields": [
+    {"id":"project_name","label":"Project name","kind":"text","default":""},
+    {"id":"project_type","label":"Project type","kind":"select","options":["internal_dashboard"],"default":"internal_dashboard"},
+    {"id":"modules","label":"Features","kind":"multi_select","options":["worker_monitor","gpu_monitor","job_queue","model_manager","user_management","file_manager","ai_assistant","analytics"],"default":[]},
+    {"id":"network_scope","label":"Network scope","kind":"radio","options":["local","internet","both"],"default":"local"},
+    {"id":"auth_enabled","label":"Login required","kind":"checkbox","default":true},
+    {"id":"ai_assistant","label":"AI assistant","kind":"checkbox","default":false},
+    {"id":"ai_capabilities","label":"AI capabilities","kind":"multi_select","options":["log_analysis","error_assistance","system_summary"],"default":[],"visible_by_default":false},
+    {"id":"ai_autonomy","label":"AI autonomy","kind":"select","options":["approval_required","assisted","autonomous"],"default":"approval_required","visible_by_default":false},
+    {"id":"https_required","label":"HTTPS required","kind":"checkbox","default":false,"visible_by_default":false},
+    {"id":"allowed_origins","label":"Allowed origins","kind":"text","default":"","visible_by_default":false},
+    {"id":"theme","label":"Theme","kind":"select","options":["windows_xp.v1"],"default":"windows_xp.v1"},
+    {"id":"density","label":"Density","kind":"select","options":["compact","comfortable"],"default":"compact"},
+    {"id":"language","label":"Language","kind":"multi_select","options":["th","en"],"default":["th","en"]}
+  ],
+  "rules": [
+    {"id":"ai_enabled_questions","when":[{"field":"ai_assistant","operator":"is_true"}],"then":[{"type":"show","field":"ai_capabilities"},{"type":"show","field":"ai_autonomy"},{"type":"require","field":"ai_capabilities"}]},
+    {"id":"internet_security_questions","when":[{"field":"network_scope","operator":"in","value":["internet","both"]}],"then":[{"type":"show","field":"https_required"},{"type":"show","field":"allowed_origins"},{"type":"require","field":"https_required"}]},
+    {"id":"local_security_hide","when":[{"field":"network_scope","operator":"equals","value":"local"}],"then":[{"type":"hide","field":"https_required"},{"type":"hide","field":"allowed_origins"}]}
+  ]
+}

@@ -1,0 +1,1 @@
+{"id":"job_queue","version":"1.0.0","type":"feature","capabilities":["queue_status","job_history","job_control"],"dependencies":["api_client"],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

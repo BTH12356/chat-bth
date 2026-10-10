@@ -1,0 +1,1 @@
+{"id":"featured_content","version":"1.0.0","type":"ui","capabilities":["featured_article"],"dependencies":["article_list"],"compatible_blueprints":["website.content.v1"],"status":"verified"}

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#245EDB">
+  <meta name="description" content="Chat BTH — Chat Save Knowleged CheckSystemp">
+  <title>Chat-BTH Workspace</title>
+  <link rel="icon" href="/static/assets/chat-bth-pixel-icon.jpeg" type="image/jpeg">
+  <link rel="stylesheet" href="./static/static.css?v=20261007-voice02">
+  <script src="./static/app.js?v=20261007-voice02" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5a9.5 9.5 0 0 1 19 0Z"/><path d="M7 9h9M7 13h6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 3h15v18H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z M3 17h17M8 7h7M8 11h5"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M12 6.5h5M12 17.5h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6ZM13 6l5 5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 20V4m-7 7 7-7 7 7"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v5h5M8 12h8M8 16h6"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6V4h6l2 3h10v13H3ZM3 7h8"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7a9 9 0 1 0 1 8M20 3v5h-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V3H3v13h5"/></symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h12l2 2v16H5ZM8 3v6h7V3M8 16h8"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4 11 13M20 14v6H4V4h6"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3M14 9l3 3"/></symbol>
+  </defs></svg>
+  <a class="skip-link" href="#workspace-content">ข้ามไปยังพื้นที่ทำงาน</a>
+  <div class="app-shell">
+    <aside id="sidebar" class="sidebar" aria-label="โปรเจกต์และบันทึก" tabindex="-1">
+      <div class="brand"><span class="brand-mark-wrap"><button id="brand-settings" class="brand-mark-button" type="button" aria-label="ตั้งค่า" title="ตั้งค่า"><img class="brand-mark" src="./static/assets/chat-bth-pixel-icon.jpeg" alt=""/></button><span class="brand-shortcut">ตั้งค่า</span></span><div>Chat-BTH<span class="brand-subtitle">PERSONAL WORKSPACE</span></div><button id="close-sidebar" class="icon-button sidebar-toggle" aria-label="ปิดเมนู"><svg><use href="#i-close"/></svg></button></div>
+      <div id="chat-sidebar" class="sidebar-view">
+        <button id="new-chat" class="primary new-chat"><svg><use href="#i-plus"/></svg>แชทใหม่</button>
+        <label class="sidebar-search" for="chat-sidebar-search">
+          <svg aria-hidden="true"><use href="#i-search"/></svg>
+          <input id="chat-sidebar-search" type="search" maxlength="120" autocomplete="off" aria-label="ค้นหาโปรเจกต์หรือแชท" placeholder="ค้นหาโปรเจกต์หรือแชท">
+        </label>
+        <p id="chat-search-status" class="chat-search-status" role="status" aria-live="polite" hidden></p>
+        <div class="sidebar-section-header"><span>โปรเจกต์ของคุณ</span><button id="new-project" class="icon-button" aria-label="สร้างโปรเจกต์" title="สร้างโปรเจกต์"><svg><use href="#i-plus"/></svg></button></div>
+        <nav id="projects" class="project-list" aria-label="รายการโปรเจกต์"><p class="side-note">กำลังโหลดโปรเจกต์…</p></nav>
+      </div>
+      <div id="build-sidebar" class="sidebar-view" hidden>
+        <button id="new-build-project" class="primary new-chat"><svg><use href="#i-plus"/></svg>โปรเจกต์ใหม่</button>
+        <div class="sidebar-section-header"><span>โปรเจกต์สำหรับ Build</span></div>
+        <nav id="build-projects" class="project-list" aria-label="เลือกโปรเจกต์สำหรับ Build"></nav>
+        <p class="side-note">ไฟล์แต่ละโปรเจกต์แยกจากกันบนเซิร์ฟเวอร์</p>
+      </div>
+      <div id="notebook-sidebar" class="sidebar-view" hidden>
+        <button id="new-notebook" class="primary new-chat"><svg><use href="#i-plus"/></svg>เพิ่ม Notebook</button>
+        <div class="sidebar-section-header">บันทึกทั้งหมด</div><nav id="notebook-list" class="project-list" aria-label="รายการ Notebook"></nav>
+        <p class="side-note">บันทึกเก็บในเบราว์เซอร์นี้<br>ส่งออกเป็นไฟล์เพื่อสำรองข้อมูลได้</p>
+      </div>
+      <div id="worker-sidebar" class="sidebar-view" hidden><div class="sidebar-section-header">การเชื่อมต่อ</div><p class="side-note">ดูสถานะ Ollama บนเซิร์ฟเวอร์ และจัดเก็บรายชื่อเครื่องใน LAN</p></div>
+      <div class="sidebar-footer"><span id="status-dot" class="status-dot"></span><span id="provider-state">กำลังเชื่อมต่อ…</span><button id="retry-connection" class="icon-button" title="เชื่อมต่อใหม่" aria-label="เชื่อมต่อใหม่"><svg><use href="#i-refresh"/></svg></button></div>
+    </aside>
+    <main id="main-panel" class="main-panel view-chat">
+      <header id="topbar" class="topbar">
+        <button id="mobile-menu" class="icon-button sidebar-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="เปิดเมนู"><svg><use href="#i-menu"/></svg></button>
+        <nav class="workspace-tabs" aria-label="พื้นที่ทำงาน" role="tablist">
+          <button id="tab-chat" class="workspace-tab active" data-view="chat" role="tab" aria-controls="chat-view" aria-selected="true"><svg><use href="#i-chat"/></svg><span>Chat</span></button>
+          <button id="tab-build" class="workspace-tab" data-view="build" role="tab" aria-controls="build-view" aria-selected="false" tabindex="-1"><svg><use href="#i-code"/></svg><span>Build</span></button>
+          <button id="tab-notebook" class="workspace-tab" data-view="notebook" role="tab" aria-controls="notebook-view" aria-selected="false" tabindex="-1"><svg><use href="#i-book"/></svg><span>Notebook</span></button>
+          <button id="tab-workers" class="workspace-tab" data-view="workers" role="tab" aria-controls="workers-view" aria-selected="false" tabindex="-1"><svg><use href="#i-server"/></svg><span>Worker<span class="wide-label"> Compute</span></span></button>
+        </nav>
+        <span class="topbar-caption">พื้นที่สำหรับทุกความคิด</span>
+      </header>
+      <div id="workspace-bar" class="workspace-bar">
+        <div class="conversation-heading"><span id="project-name" class="eyebrow">WORKSPACE</span><div class="title-line"><h1 id="conversation-title">กำลังโหลด…</h1><button id="rename-chat" class="icon-button chat-only" aria-label="แก้ไขชื่อแชท" title="แก้ไขชื่อแชท"><svg><use href="#i-edit"/></svg></button></div></div>
+        <button id="mobile-settings" class="secondary-button settings-toggle chat-only" aria-controls="right-panel" aria-expanded="false"><svg><use href="#i-settings"/></svg><span>โมเดล</span></button>
+      </div>
+      <div id="connection-banner" class="connection-banner" role="status" hidden><span id="connection-message"></span><button id="banner-retry" class="text-button">ลองใหม่</button><button id="auth-open" class="text-button" hidden>ใส่รหัสเข้าใช้งาน</button></div>
+      <div id="workspace-content" class="workspace-content" tabindex="-1">
+        <section id="chat-view" class="view-panel" role="tabpanel" aria-labelledby="tab-chat">
+          <div id="chat" class="chat" role="log" aria-label="บทสนทนา" aria-live="polite" aria-relevant="additions"></div>
+          <footer class="composer-area">
+            <form id="composer" class="composer">
+              <div id="attachment-list" class="attachment-list" aria-live="polite"></div>
+              <textarea id="message" rows="2" maxlength="12000" placeholder="วันนี้อยากทำอะไรให้สำเร็จ?" aria-label="ข้อความ" aria-describedby="composer-help"></textarea>
+              <div class="composer-toolbar"><div class="composer-tools">
+                <button id="attach-file" class="icon-button" type="button" title="แนบไฟล์ข้อความ" aria-label="แนบไฟล์ข้อความ"><svg><use href="#i-plus"/></svg></button>
+                <input id="file-input" type="file" accept=".txt,.md,.csv,.json,.py,.js,.ts,.html,.css,.log,text/*" multiple hidden>
+                <label class="search-toggle"><input id="search" type="checkbox"><span>ค้นเว็บ</span></label>
+              </div><span id="composer-count" class="metadata">0 / 12,000</span><button id="send" class="send-button" type="submit" aria-label="ส่งข้อความ" disabled><svg><use href="#i-arrow"/></svg></button></div>
+            </form>
+            <div id="composer-error" class="inline-error" role="alert" hidden></div>
+            <p id="composer-help">Enter ส่ง · Shift + Enter ขึ้นบรรทัดใหม่ <span>ตรวจสอบข้อมูลสำคัญจากคำตอบเสมอ</span></p>
+          </footer>
+        </section>
+        <section id="build-view" class="view-panel" role="tabpanel" aria-labelledby="tab-build" hidden>
+          <div class="build-layout">
+            <aside class="build-explorer" aria-label="ไฟล์ในโปรเจกต์">
+              <div class="build-pane-heading"><strong>Files</strong><div><button id="new-build-file" class="icon-button" title="สร้างไฟล์" aria-label="สร้างไฟล์"><svg><use href="#i-plus"/></svg></button><button id="refresh-build-files" class="icon-button" title="รีเฟรชไฟล์" aria-label="รีเฟรชไฟล์"><svg><use href="#i-refresh"/></svg></button></div></div>
+              <div id="build-file-list" class="build-file-list"></div>
+            </aside>
+            <section class="build-editor-pane">
+              <div class="build-pane-heading"><span id="build-file-name">ยังไม่ได้เปิดไฟล์</span><div><button id="toggle-guided-build" class="text-button" type="button">Guided Build</button><span id="build-editor-actions"><button id="preview-build" class="text-button" disabled><svg><use href="#i-external"/></svg>Preview</button><button id="delete-build-file" class="text-button" disabled>ลบ</button><button id="save-build-file" class="primary" disabled><svg><use href="#i-save"/></svg>บันทึก</button></span></div></div>
+              <form id="bth-create-form" class="bth-create-panel" hidden>
+                <div class="create-intro"><div><span class="eyebrow">BTH CREATE v0.1</span><h2 id="create-form-title">สร้าง Internal Dashboard</h2><p>กำหนดให้ชัด ใช้ของเดิมก่อน และสร้างเฉพาะส่วนที่ขาด</p></div><span class="create-badge">Guided Build</span></div>
+                <section id="guided-conversation" class="guided-conversation" aria-live="polite">
+                  <div class="guided-conversation-heading"><div><span class="eyebrow">HERMES GUIDED BUILD</span><h3>คุยทีละเรื่อง แล้วตรวจสรุปก่อนสร้าง</h3></div><button id="guided-start" class="secondary-button" type="button">เริ่มสนทนา</button></div>
+                  <p id="guided-reason" class="guided-reason"></p>
+                  <div id="guided-question" class="guided-question"><p>กด “เริ่มสนทนา” เพื่อให้ Hermes ถามความต้องการทีละเรื่อง</p></div>
+                  <div id="guided-answer" class="guided-answer" hidden></div>
+                  <div id="guided-summary" class="guided-summary" hidden></div>
+                </section>
+                <div class="create-form-grid">
+                  <label class="create-field create-wide"><span>ชื่อโปรเจกต์</span><input id="create-project-name" maxlength="120" required></label>
+                  <label class="create-field create-wide"><span>Blueprint</span><select id="create-blueprint"><optgroup label="Dashboard"><option value="dashboard.internal.v1">Internal Dashboard</option></optgroup><optgroup label="Multi-page Business Website"><option value="website.corporate.v1">Corporate Website</option><option value="website.organization.v1">Organization Portal</option><option value="website.retail.v1">Retail &amp; Product Catalog</option><option value="website.services.v1">Service Business</option><option value="website.knowledge.v1">Knowledge &amp; Document Hub</option></optgroup><optgroup label="Standard Website"><option value="website.landing.v1">Landing Page</option><option value="website.company.v1">Company Website</option><option value="website.portfolio.v1">Portfolio</option><option value="website.catalog.v1">Product Catalog</option><option value="website.content.v1">Content / Blog</option></optgroup><optgroup label="Catalog &amp; Library"><option value="catalog.library.v1">Digital Library</option><option value="catalog.documents.v1">Document Center</option><option value="catalog.products.v1">Product &amp; Service Catalog</option><option value="catalog.media.v1">Media Archive</option><option value="catalog.learning.v1">Learning Library</option></optgroup></select></label>
+                  <label class="create-field"><span>Network</span><select id="create-network"><option value="local">Local Network</option><option value="internet">Internet</option><option value="both">Both</option></select></label>
+                  <label class="create-field"><span>Density</span><select id="create-density"><option value="compact">Compact</option><option value="comfortable">Comfortable</option></select></label>
+                </div>
+                <fieldset id="create-dashboard-options" class="create-options"><legend>Features</legend><div class="create-check-grid">
+                  <label><input type="checkbox" name="create-module" value="worker_monitor" checked> Worker Monitoring</label>
+                  <label><input type="checkbox" name="create-module" value="gpu_monitor" checked> GPU Monitoring</label>
+                  <label><input type="checkbox" name="create-module" value="job_queue" checked> Job Queue</label>
+                  <label><input type="checkbox" name="create-module" value="model_manager" checked> Model Management</label>
+                  <label><input type="checkbox" name="create-module" value="user_management"> User Management</label>
+                  <label><input type="checkbox" name="create-module" value="file_manager"> File Manager</label>
+                  <label><input type="checkbox" name="create-module" value="ai_assistant" checked> AI Assistant</label>
+                  <label><input type="checkbox" name="create-module" value="analytics"> Analytics</label>
+                </div></fieldset>
+                <fieldset id="create-website-options" class="create-options" hidden><legend id="create-navigation-legend">Website navigation</legend>
+                  <div id="create-tab-list" class="create-tab-list">
+                    <div class="create-tab-row"><input class="create-tab-name" maxlength="60" value="หน้าหลัก" aria-label="ชื่อหน้า"><select class="create-page-type" aria-label="รูปแบบหน้า"><option value="home">หน้าหลัก</option><option value="about">เกี่ยวกับองค์กร</option><option value="policy">นโยบาย</option><option value="document_library">กฎระเบียบ / เอกสาร</option><option value="knowledge_library">คลังความรู้</option><option value="product_catalog">สินค้า</option><option value="service">บริการ</option><option value="news">ข่าวสาร</option><option value="contact">ติดต่อ</option><option value="standard">เนื้อหาทั่วไป</option></select><button class="text-button remove-create-tab" type="button">ลบ</button></div>
+                    <div class="create-tab-row"><input class="create-tab-name" maxlength="60" value="เกี่ยวกับเรา" aria-label="ชื่อหน้า"><select class="create-page-type" aria-label="รูปแบบหน้า"><option value="home">หน้าหลัก</option><option value="about" selected>เกี่ยวกับองค์กร</option><option value="policy">นโยบาย</option><option value="document_library">กฎระเบียบ / เอกสาร</option><option value="knowledge_library">คลังความรู้</option><option value="product_catalog">สินค้า</option><option value="service">บริการ</option><option value="news">ข่าวสาร</option><option value="contact">ติดต่อ</option><option value="standard">เนื้อหาทั่วไป</option></select><button class="text-button remove-create-tab" type="button">ลบ</button></div>
+                    <div class="create-tab-row"><input class="create-tab-name" maxlength="60" value="ติดต่อ" aria-label="ชื่อหน้า"><select class="create-page-type" aria-label="รูปแบบหน้า"><option value="home">หน้าหลัก</option><option value="about">เกี่ยวกับองค์กร</option><option value="policy">นโยบาย</option><option value="document_library">กฎระเบียบ / เอกสาร</option><option value="knowledge_library">คลังความรู้</option><option value="product_catalog">สินค้า</option><option value="service">บริการ</option><option value="news">ข่าวสาร</option><option value="contact" selected>ติดต่อ</option><option value="standard">เนื้อหาทั่วไป</option></select><button class="text-button remove-create-tab" type="button">ลบ</button></div>
+                  </div>
+                  <div class="create-tab-actions"><button id="add-create-tab" class="secondary-button" type="button"><svg><use href="#i-plus"/></svg>เพิ่มแท็บ</button><label>โทนสี <select id="create-color-tone"><option value="blue">Blue</option><option value="green">Green</option><option value="purple">Purple</option><option value="orange">Orange</option><option value="neutral">Neutral</option></select></label></div>
+                </fieldset>
+                <div class="create-form-grid">
+                  <fieldset class="create-options"><legend>Access</legend><label><input id="create-auth" type="checkbox" checked> Login required</label></fieldset>
+                  <fieldset class="create-options"><legend>Language</legend><label><input type="checkbox" name="create-language" value="th" checked> ไทย</label><label><input type="checkbox" name="create-language" value="en" checked> English</label></fieldset>
+                </div>
+                <fieldset id="create-ai-options" class="create-options"><legend>AI capabilities</legend><div class="create-check-grid">
+                  <label><input type="checkbox" name="create-ai-capability" value="log_analysis" checked> Log Analysis</label>
+                  <label><input type="checkbox" name="create-ai-capability" value="error_assistance" checked> Error Assistance</label>
+                  <label><input type="checkbox" name="create-ai-capability" value="system_summary" checked> System Summary</label>
+                  <label>Autonomy <select id="create-ai-autonomy"><option value="approval_required">Approval Required</option><option value="assisted">Assisted</option><option value="autonomous">Autonomous</option></select></label>
+                </div></fieldset>
+                <div class="create-summary"><strong>Theme</strong><span id="create-theme-summary">Windows XP · Blueprint dashboard.internal.v1</span></div>
+                <div class="create-actions"><button id="create-spec-preview" class="secondary-button" type="button">ตรวจ Project Spec</button><button id="create-build" class="primary" type="submit">Freeze &amp; Build</button></div>
+                <pre id="create-spec-output" class="create-spec-output" aria-live="polite">กรอกข้อมูลแล้วตรวจ Project Spec ก่อนเริ่ม Build</pre>
+              </form>
+              <textarea id="build-editor" class="build-editor" spellcheck="false" aria-label="ตัวแก้ไขโค้ด" disabled placeholder="เลือกไฟล์ หรือสร้างไฟล์ใหม่"></textarea><pre id="build-diagnostics" class="build-diagnostics" aria-live="polite"></pre>
+            </section>
+            <section class="build-terminal-pane" aria-label="รันโค้ด">
+              <form id="run-command-form" class="run-command-form"><label for="run-command">Command</label><input id="run-command" value="python3 main.py" maxlength="500" autocomplete="off"><button id="run-command-button" class="primary" type="submit"><svg><use href="#i-play"/></svg>Run</button></form>
+              <p class="build-run-note">รองรับ python, python3, node, npm และ pytest · ไม่มี shell operator · จำกัดเวลา 60 วินาที</p>
+              <pre id="build-output" class="build-output" aria-live="polite">เลือกโปรเจกต์แล้วสร้างไฟล์เพื่อเริ่มต้น</pre>
+            </section>
+            <aside class="build-assistant-pane" aria-label="ผู้ช่วย AI สำหรับ Build">
+              <div class="build-assistant-heading"><div><span class="assistant-status" aria-hidden="true"></span><div><strong>Build Assistant</strong><span>คิดร่วมกัน แล้วค่อยลงมือ</span></div></div><button id="clear-build-chat" class="icon-button" type="button" title="เริ่มบทสนทนาใหม่" aria-label="ล้างบทสนทนา Build Assistant"><svg><use href="#i-trash"/></svg></button></div>
+              <div id="build-chat" class="build-chat" role="log" aria-label="บทสนทนากับ Build Assistant" aria-live="polite"></div>
+              <div id="build-chat-suggestions" class="build-chat-suggestions" aria-label="คำถามแนะนำ">
+                <button type="button" data-prompt="ช่วยถามคำถามเพื่อเก็บ requirement ของผลงานนี้ให้ครบ">เก็บ requirement</button>
+                <button type="button" data-prompt="ช่วยรีวิวโปรเจกต์นี้และเสนอสิ่งที่ควรปรับปรุง 3 ข้อ">รีวิวงาน</button>
+                <button type="button" data-prompt="ช่วยวางแผนขั้นตอนถัดไปที่ทำให้ผลงานนี้ดีขึ้น">วางแผนต่อ</button>
+              </div>
+              <form id="build-chat-form" class="build-chat-form">
+                <select id="build-model" aria-label="โมเดลสำหรับ Build Assistant"><option value="auto">ค่าเริ่มต้น</option></select>
+                <textarea id="build-agent-instruction" maxlength="4000" rows="3" placeholder="เล่าไอเดีย เป้าหมาย หรือถามเกี่ยวกับผลงาน…" aria-label="ข้อความถึง Build Assistant"></textarea>
+                <div class="build-chat-actions"><button id="build-agent-button" class="secondary-button" type="button" title="ให้ AI แก้ไฟล์ในโปรเจกต์ตามข้อความนี้"><svg><use href="#i-code"/></svg>ให้ AI ลงมือ</button><span>Enter เพื่อส่ง</span><button id="build-chat-send" class="send-button" type="submit" aria-label="ส่งข้อความถึง Build Assistant"><svg><use href="#i-arrow"/></svg></button></div>
+              </form>
+            </aside>
+          </div>
+        </section>
+        <section id="notebook-view" class="view-panel" role="tabpanel" aria-labelledby="tab-notebook" hidden>
+          <div class="content-wrap">
+            <div class="page-intro"><div><span class="eyebrow">YOUR KNOWLEDGE, TOGETHER</span><h2>เก็บความคิด ให้ต่อยอดได้</h2><p>บันทึกสิ่งที่เรียนรู้ และกลับมาทำงานต่อได้ทุกเมื่อ</p></div><button id="new-notebook-main" class="primary"><svg><use href="#i-plus"/></svg>เพิ่ม Notebook</button></div>
+            <div class="collection-toolbar"><label class="filter-input"><svg><use href="#i-search"/></svg><input id="notebook-filter" type="search" placeholder="ค้นหาในบันทึก…" aria-label="ค้นหา Notebook"></label><span id="notebook-count" class="metadata"></span></div>
+            <div id="notebook-grid" class="notebook-grid"></div>
+          </div>
+        </section>
+        <section id="workers-view" class="view-panel" role="tabpanel" aria-labelledby="tab-workers" hidden>
+          <div class="content-wrap"><div class="page-intro"><div><span class="eyebrow">COMPUTE NETWORK</span><h2>พื้นที่ประมวลผลของคุณ</h2><p>เชื่อมต่อ Ollama, เครื่อง LAN และ API ที่ใช้ประมวลผล</p></div><div class="worker-actions"><button id="add-api-provider" class="primary"><svg><use href="#i-key"/></svg>เพิ่ม API</button><button id="discover-workers" class="secondary-button"><svg><use href="#i-plus"/></svg>เพิ่มเครื่อง LAN</button></div></div>
+            <div class="section-caption"><span>เซิร์ฟเวอร์ที่เชื่อมต่อ</span><button id="refresh-workers" class="text-button"><svg><use href="#i-refresh"/></svg>ตรวจสถานะ</button></div>
+            <div id="worker-grid" class="worker-grid"></div><p class="section-note">API key เก็บเฉพาะในหน่วยความจำของเซิร์ฟเวอร์และจะถูกล้างเมื่อรีสตาร์ต ส่วนรายการ LAN เก็บในเบราว์เซอร์นี้</p>
+          </div>
+        </section>
+      </div>
+      <aside id="right-panel" class="right-panel" aria-label="โมเดลและทรัพยากร" tabindex="-1">
+        <div class="panel-heading"><h2>โมเดลภาษา</h2><button id="close-settings" class="icon-button settings-toggle" aria-label="ปิดการตั้งค่า"><svg><use href="#i-close"/></svg></button></div>
+        <label class="field-label" for="model">ใช้ในบทสนทนานี้</label><select id="model" aria-describedby="model-capabilities"><option value="auto">ค่าเริ่มต้น</option></select>
+        <div class="model-profile"><span class="profile-icon"><svg><use href="#i-chat"/></svg></span><h3 id="model-name">ค่าเริ่มต้นของระบบ</h3><p id="model-capabilities">กำลังอ่านข้อมูลโมเดล…</p><div id="model-tags" class="tags"></div><span id="model-provider" class="metadata"></span></div>
+        <section class="resource-card" aria-label="ทรัพยากรระบบ"><div class="resource-heading"><h2>ทรัพยากรระบบ</h2><span id="resource-refresh" class="metadata">กำลังอ่าน…</span></div><div id="gpu-resources" class="resource-gpus"></div><div class="resource-row"><span>RAM</span><span id="ram-value">—</span></div><div class="resource-bar" aria-hidden="true"><span id="ram-bar"></span></div><div class="resource-row"><span>System load</span><span id="load-value">—</span></div></section>
+        <p class="panel-tip">ค่าเริ่มต้นใช้โมเดลที่ตั้งไว้บนเซิร์ฟเวอร์ เลือกโมเดลอื่นให้เหมาะกับงานได้</p>
+      </aside>
+    </main>
+  </div>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-dialog-title">
+    <form method="dialog">
+      <div class="dialog-heading"><div><span class="eyebrow">CHAT BTH SETTINGS</span><h2 id="settings-dialog-title">ตั้งค่า Web UI</h2></div><button class="icon-button" data-close type="button" aria-label="ปิดหน้าต่างตั้งค่า"><svg><use href="#i-close"/></svg></button></div>
+      <label>ธีมของ Web UI<select id="ui-theme-select"><option value="windows-xp">Windows XP Pixel Art</option><option value="light">Light Contrast</option><option value="neon">Retro Neon Terminal</option><option value="macos">macOS Modern</option><option value="cyberpunk">Cyberpunk Future</option><option value="synthwave">Neon Violet / Synthwave</option><option value="blueprint">Industrial Blueprint</option><option value="dracula">Dracula / Nord</option><option value="matrix">Classic Matrix</option><option value="win98">Windows 95/98 Classic</option><option value="eink">E-Ink / Paper Display</option></select></label>
+      <p class="dialog-note">เลือกธีมแล้วระบบจะจำค่าไว้ในเบราว์เซอร์นี้</p>
+      <section class="readme-reader" aria-labelledby="readme-title"><div class="readme-heading"><h3 id="readme-title">คู่มือการใช้งาน</h3><button id="reload-readme" class="text-button" type="button">โหลดคู่มือใหม่</button></div><pre id="readme-content" tabindex="0">กำลังโหลด README.md…</pre></section>
+      <div class="dialog-actions"><span class="spacer"></span><button class="primary" value="default" type="submit">เสร็จสิ้น</button></div>
+    </form>
+  </dialog>
+  <dialog id="build-preview-dialog" class="build-preview-dialog" aria-labelledby="build-preview-title">
+    <div class="preview-heading"><div><span class="eyebrow">LIVE PREVIEW</span><h2 id="build-preview-title">เว็บไซต์พร้อมใช้งาน</h2><span id="preview-selection" class="preview-selection">ยังไม่ได้เลือก Element</span></div><div class="preview-actions"><label class="preview-viewport-label">Viewport <select id="preview-viewport"><option value="desktop">Desktop</option><option value="tablet">Tablet</option><option value="mobile">Mobile</option></select></label><button id="preview-edit-mode" class="secondary-button" type="button">เลือก Element</button><button id="open-build-preview-tab" class="secondary-button" type="button"><svg><use href="#i-external"/></svg>เปิดแท็บใหม่</button><button class="icon-button" data-close type="button" aria-label="ปิด Preview"><svg><use href="#i-close"/></svg></button></div></div>
+    <div class="preview-workspace"><iframe id="build-preview-frame" title="ตัวอย่างเว็บไซต์ที่ Build สร้าง" sandbox="allow-scripts allow-forms allow-modals allow-downloads"></iframe><aside id="preview-properties" class="preview-properties" aria-label="คุณสมบัติ Element"><h3>Element Properties</h3><p id="preview-properties-empty">เลือก Element ใน Preview เพื่อแก้ไข</p><div id="preview-properties-form" hidden><div id="preview-node-meta" class="preview-node-meta"></div><label>ข้อความ<textarea id="preview-prop-text" rows="3"></textarea></label><label>ลิงก์ / URL<input id="preview-prop-href" type="text"></label><label>รูปภาพ URL<input id="preview-prop-src" type="text"></label><div class="preview-style-grid"><label>สีตัวอักษร<input id="preview-prop-color" type="text" placeholder="#111827"></label><label>สีพื้นหลัง<input id="preview-prop-background_color" type="text" placeholder="#ffffff"></label><label>ขนาดตัวอักษร<input id="preview-prop-font_size" type="text" placeholder="16px"></label><label>ระยะห่าง<input id="preview-prop-margin" type="text" placeholder="0 0 16px"></label><label>Padding<input id="preview-prop-padding" type="text" placeholder="12px"></label><label>จัดวาง<select id="preview-prop-text_align"><option value="">ไม่เปลี่ยน</option><option>left</option><option>center</option><option>right</option><option>justify</option></select></label></div><button id="preview-apply-properties" class="primary" type="button">บันทึก Properties</button></div></aside></div>
+  </dialog>
+  <dialog id="notebook-dialog" aria-labelledby="notebook-dialog-title"><form id="notebook-form">
+    <div class="dialog-heading"><div><span class="eyebrow">NOTEBOOK</span><h2 id="notebook-dialog-title">เพิ่ม Notebook</h2></div><button class="icon-button" data-close type="button" aria-label="ปิด"><svg><use href="#i-close"/></svg></button></div>
+    <label>ชื่อ Notebook<input id="notebook-title-input" maxlength="120" required placeholder="ตั้งชื่อเรื่องที่อยากเก็บไว้"></label>
+    <label>เนื้อหา<textarea id="notebook-content-input" rows="12" maxlength="100000" placeholder="สิ่งที่ได้เรียนรู้ ไอเดีย หรือรายละเอียดงาน…"></textarea></label>
+    <p class="dialog-note">เก็บในเบราว์เซอร์นี้ · ส่งออกไฟล์เพื่อสำรองหรือย้ายเครื่อง</p><p class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button id="delete-notebook" class="danger-button" type="button" hidden>ลบบันทึก</button><button id="export-notebook" class="text-button" type="button" hidden>ส่งออก .txt</button><span class="spacer"></span><button class="secondary-button" data-close type="button">ยกเลิก</button><button class="primary" type="submit">บันทึก</button></div>
+  </form></dialog>
+  <dialog id="name-dialog" class="compact-dialog" aria-labelledby="name-dialog-title"><form id="name-form">
+    <div class="dialog-heading"><h2 id="name-dialog-title">ตั้งชื่อ</h2><button class="icon-button" data-close type="button" aria-label="ปิด"><svg><use href="#i-close"/></svg></button></div>
+    <label><span id="name-input-label">ชื่อ</span><input id="name-input" maxlength="160" required></label><p class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><span class="spacer"></span><button class="secondary-button" data-close type="button">ยกเลิก</button><button class="primary" type="submit">บันทึก</button></div>
+  </form></dialog>
+  <dialog id="worker-dialog" class="compact-dialog" aria-labelledby="worker-dialog-title"><form id="worker-form">
+    <div class="dialog-heading"><h2 id="worker-dialog-title">เพิ่มเครื่อง LAN</h2><button class="icon-button" data-close type="button" aria-label="ปิด"><svg><use href="#i-close"/></svg></button></div>
+    <label>ชื่อเครื่อง<input id="worker-name-input" maxlength="80" required placeholder="เช่น GPU Worker 01"></label><label>ชื่อโฮสต์หรือ IPv4<input id="worker-host-input" maxlength="253" required placeholder="เช่น 192.168.1.10"></label><p class="dialog-note">บันทึกรายชื่อเครื่องเท่านั้น ยังไม่ตรวจสอบการเชื่อมต่อหรือส่งงาน</p><p class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><span class="spacer"></span><button class="secondary-button" data-close type="button">ยกเลิก</button><button class="primary" type="submit">เพิ่มเครื่อง</button></div>
+  </form></dialog>
+  <dialog id="api-provider-dialog" class="compact-dialog" aria-labelledby="api-provider-title"><form id="api-provider-form">
+    <div class="dialog-heading"><h2 id="api-provider-title">เพิ่ม API สำหรับประมวลผล</h2><button class="icon-button" data-close type="button" aria-label="ปิด"><svg><use href="#i-close"/></svg></button></div>
+    <label>ประเภท API<select id="api-provider-kind"><option value="google">Google AI Studio (Gemini)</option><option value="openai">OpenAI-compatible อื่น ๆ</option></select></label>
+    <label>ชื่อผู้ให้บริการ<input id="api-provider-name" maxlength="80" required placeholder="เช่น OpenAI หรือ OpenRouter" autocomplete="off"></label>
+    <label>Base URL<input id="api-provider-url" type="url" maxlength="500" required placeholder="https://api.example.com/v1" inputmode="url" autocomplete="off"><span id="api-provider-url-help" class="field-help"></span></label>
+    <label>โมเดล<input id="api-provider-models" maxlength="1000" required placeholder="เช่น gemini-3.8-flash" autocomplete="off"><span class="field-help">คั่นหลายโมเดลด้วยเครื่องหมายจุลภาค</span></label>
+    <label>API key<input id="api-provider-key" type="password" maxlength="1000" required autocomplete="new-password" spellcheck="false" placeholder="ใส่คีย์จากผู้ให้บริการ"></label>
+    <p class="dialog-note">คีย์จะส่งไปยังเซิร์ฟเวอร์ผ่านการเชื่อมต่อปัจจุบัน ไม่บันทึกในเบราว์เซอร์ ฐานข้อมูล หรือตอบกลับจาก API ควรใช้หน้านี้ผ่าน HTTPS เมื่อเข้าจากเครื่องอื่น</p><p class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button class="secondary-button" data-close type="button">ยกเลิก</button><span class="spacer"></span><button class="primary" type="submit">เชื่อมต่อ API</button></div>
+  </form></dialog>
+  <dialog id="confirm-dialog" class="compact-dialog" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title">ยืนยัน</h2><p id="confirm-message"></p><div class="dialog-actions"><span class="spacer"></span><button class="secondary-button" value="cancel">ยกเลิก</button><button id="confirm-action" class="danger-button" value="confirm">ยืนยัน</button></div></form></dialog>
+  <dialog id="auth-dialog" class="compact-dialog" aria-labelledby="auth-title"><form id="auth-form"><h2 id="auth-title">เข้าใช้งาน Workspace</h2><label>รหัสเข้าใช้งาน<input id="auth-token" type="password" required autocomplete="off"></label><p class="dialog-note">ใช้รหัส HERMES_WEB_TOKEN ของเซิร์ฟเวอร์ รหัสจะจำไว้เฉพาะในแท็บนี้</p><p class="form-error" role="alert" hidden></p><div class="dialog-actions"><button class="secondary-button" data-close type="button">ยกเลิก</button><button class="primary" type="submit">เชื่อมต่อ</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

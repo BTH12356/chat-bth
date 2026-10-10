@@ -1,0 +1,1 @@
+{"id":"button","version":"1.0.0","type":"ui","capabilities":["button_control","button_states"],"dependencies":[],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

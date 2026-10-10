@@ -1,0 +1,1 @@
+{"id":"api_client","version":"1.0.0","type":"infrastructure","capabilities":["http_api_access"],"dependencies":[],"compatible_blueprints":["dashboard.internal.v1"],"status":"verified"}

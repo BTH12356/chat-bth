@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hermes.security-audit/v1",
+  "type": "object",
+  "required": ["schema", "status", "checks", "issues"],
+  "properties": {
+    "schema": {"const": "hermes.security-audit/v1"},
+    "status": {"enum": ["passed", "failed"]},
+    "checks": {"type": "object", "additionalProperties": {"type": "string"}},
+    "issues": {"type": "array", "items": {"$ref": "#/$defs/issue"}}
+  },
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "required": ["severity", "code", "path", "line", "message"],
+      "properties": {
+        "severity": {"enum": ["error", "warning"]},
+        "code": {"type": "string"},
+        "path": {"type": "string"},
+        "line": {"type": "integer", "minimum": 1},
+        "message": {"type": "string"}
+      }
+    }
+  }
+}

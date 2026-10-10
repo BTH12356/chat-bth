@@ -1,0 +1,1 @@
+{"id":"testimonials","version":"1.0.0","type":"ui","capabilities":["testimonial_cards"],"dependencies":["site_shell"],"compatible_blueprints":["website.landing.v1"],"status":"verified"}

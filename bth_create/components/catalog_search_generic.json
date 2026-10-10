@@ -1,0 +1,1 @@
+{"id":"catalog_search_generic","version":"1.0.0","type":"feature","capabilities":["catalog_search","text_filter"],"dependencies":["item_catalog"],"compatible_blueprints":["catalog.library.v1","catalog.documents.v1","catalog.products.v1","catalog.media.v1","catalog.learning.v1"],"status":"verified"}

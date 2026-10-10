@@ -1,0 +1,25 @@
+{
+  "id":"website_standard.v1","version":"1.0.0",
+  "fields":[
+    {"id":"project_name","label":"Project name","kind":"text","default":"","required":true},
+    {"id":"blueprint_id","label":"Website Blueprint","kind":"select","options":["website.landing.v1","website.company.v1","website.portfolio.v1","website.catalog.v1","website.content.v1","website.corporate.v1","website.organization.v1","website.retail.v1","website.services.v1","website.knowledge.v1","catalog.library.v1","catalog.documents.v1","catalog.products.v1","catalog.media.v1","catalog.learning.v1"],"default":"website.landing.v1","required":true},
+    {"id":"tabs","label":"Navigation tabs","kind":"multi_select","default":["หน้าหลัก","เกี่ยวกับเรา","ติดต่อ"],"required":true},
+    {"id":"page_types","label":"Page types","kind":"multi_select","options":["home","about","policy","document_library","knowledge_library","product_catalog","service","news","contact","standard"],"default":[]},
+    {"id":"color_tone","label":"Color tone","kind":"select","options":["blue","green","purple","orange","neutral"],"default":"blue","required":true},
+    {"id":"network_scope","label":"Network scope","kind":"radio","options":["local","internet","both"],"default":"internet","required":true},
+    {"id":"auth_enabled","label":"Authentication","kind":"checkbox","default":true,"required":true},
+    {"id":"density","label":"Density","kind":"select","options":["compact","comfortable"],"default":"comfortable","required":true},
+    {"id":"language","label":"Language","kind":"multi_select","options":["th","en"],"default":["th","en"],"required":true},
+    {"id":"content_needed","label":"Add website content","kind":"checkbox","default":true,"required":true},
+    {"id":"content_about","label":"Business or organization overview","kind":"text","default":"","visible_by_default":false},
+    {"id":"content_offer","label":"Key products or services","kind":"text","default":"","visible_by_default":false},
+    {"id":"content_audience","label":"Target audience","kind":"text","default":"","visible_by_default":false},
+    {"id":"content_contact","label":"Contact details","kind":"text","default":"","visible_by_default":false}
+  ],
+  "rules":[
+    {"id":"website_content_questions","when":[{"field":"content_needed","operator":"is_true"}],"then":[
+      {"type":"show","field":"content_about"},{"type":"show","field":"content_offer"},{"type":"show","field":"content_audience"},{"type":"show","field":"content_contact"},
+      {"type":"require","field":"content_about"},{"type":"require","field":"content_offer"}
+    ]}
+  ]
+}
