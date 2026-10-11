@@ -3,7 +3,7 @@
 # Optional local voice stack. Keep it separate from Web/Telegram CI.
 faster-whisper==1.2.1
 nltk==3.10.3
-pandas==2.3.3
+pandas==3.0.6
 piper-tts==1.8.0
 pygame==2.6.1
 pynput==1.8.2
