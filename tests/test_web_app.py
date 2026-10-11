@@ -10,17 +10,17 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import asyncio
 import anyio.to_thread
-import httpx2
+import httpx
 import requests
 
 
 class AsgiClient:
-    """Small synchronous facade around httpx2's in-process ASGI transport."""
+    """Small synchronous facade around httpx's in-process ASGI transport."""
 
     def request(self, method, path, **kwargs):
         async def send():
-            transport = httpx2.ASGITransport(app=self.app)
-            async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
+            transport = httpx.ASGITransport(app=self.app)
+            async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
                 return await client.request(method, path, **kwargs)
         return asyncio.run(send())
 
@@ -80,6 +80,8 @@ class WorkspaceTests(unittest.TestCase):
         self.token.start()
         self.workspace = patch.object(self.api, "WORKSPACE_ROOT", Path(self.directory.name) / "workspaces")
         self.workspace.start()
+        self.command_execution = patch.object(self.api, "COMMAND_EXECUTION_ENABLED", True)
+        self.command_execution.start()
         self.to_thread = patch.object(self.api.asyncio, "to_thread", new=self.inline_to_thread)
         self.to_thread.start()
         self.anyio_thread = patch.object(anyio.to_thread, "run_sync", new=self.inline_anyio_thread)
@@ -94,6 +96,7 @@ class WorkspaceTests(unittest.TestCase):
         self.client.close()
         self.anyio_thread.stop()
         self.to_thread.stop()
+        self.command_execution.stop()
         self.workspace.stop()
         self.token.stop()
 
@@ -207,6 +210,14 @@ class WorkspaceTests(unittest.TestCase):
         with patch.object(self.api, "WEB_TOKEN", "test-only"):
             self.assertEqual(self.client.get("/api/projects").status_code, 401)
             self.assertEqual(self.client.get("/api/projects", headers={"x-hermes-token": "test-only"}).status_code, 200)
+
+    def test_non_loopback_bind_requires_token(self):
+        with self.assertRaisesRegex(RuntimeError, "HERMES_WEB_TOKEN"):
+            self.api.validate_runtime_security("0.0.0.0", "")
+        self.api.validate_runtime_security("0.0.0.0", "test-token")
+
+    def test_build_agent_command_execution_defaults_to_disabled(self):
+        self.assertFalse(self.api.BuildAgentRequest(instruction="inspect").run_command)
 
     def test_runtime_api_provider_keeps_key_server_side_and_processes_chat(self):
         created = self.client.post("/api/providers", json={
@@ -376,6 +387,44 @@ class WorkspaceTests(unittest.TestCase):
         )
         self.assertEqual(blocked.status_code, 400)
 
+    def test_workspace_command_execution_is_opt_in(self):
+        project_id = self.conversation["project_id"]
+        with patch.object(self.api, "COMMAND_EXECUTION_ENABLED", False):
+            response = self.client.post(
+                f"/api/projects/{project_id}/workspace/run",
+                json={"command": "python3 -c \"print('blocked')\""},
+            )
+        self.assertEqual(response.status_code, 403)
+
+    def test_trusted_internal_syntax_check_works_when_commands_are_disabled(self):
+        project_id = self.conversation["project_id"]
+        self.api.write_workspace_file(
+            project_id,
+            self.api.WorkspaceFileRequest(path="app.js", content="const ready = true;\n"),
+        )
+        with patch.object(self.api, "COMMAND_EXECUTION_ENABLED", False):
+            result = self.api.run_workspace_command(
+                project_id,
+                self.api.RunCommandRequest(command="node --check app.js"),
+                trusted_internal=True,
+            )
+        self.assertEqual(result["exit_code"], 0, result["stderr"])
+
+    def test_audit_log_recursively_redacts_secrets_and_stays_valid_json(self):
+        project_id = self.conversation["project_id"]
+        payload = {
+            "token": "top-secret",
+            "nested": {"api_key": "provider-secret", "note": "Authorization: Bearer abc.def"},
+            "items": [{"password": "hidden"}],
+            "large": "x" * 9000,
+        }
+        self.api.record_audit_event(project_id, "security_test", payload)
+        event = self.api.audit_events(project_id)[-1]
+        encoded = json.dumps(event, ensure_ascii=False)
+        for secret in ("top-secret", "provider-secret", "abc.def", "hidden"):
+            self.assertNotIn(secret, encoded)
+        self.assertTrue(event["payload"]["truncated"])
+
     def test_build_agent_applies_files_and_runs_command(self):
         project_id = self.conversation["project_id"]
         reply = {
@@ -434,7 +483,9 @@ class WorkspaceTests(unittest.TestCase):
         replies = [{"reply": content, "model": "deepseek-r1:7b"}
                    for path, content in [("index.html", '<html><body><link rel="stylesheet" href="styles.css"><script src="app.js"></script></body></html>'), ("styles.css", "body { color: green; }"), ("app.js", "console.log('ready');")]]
         with patch.object(self.api, "answer_chat", new_callable=AsyncMock, side_effect=replies) as model:
-            result = self.client.post(f"/api/projects/{project_id}/workspace/agent", json={"instruction": "สร้างเว็บไซต์", "model": "deepseek-r1:7b", "run_command": False}).json()
+            response = self.client.post(f"/api/projects/{project_id}/workspace/agent", json={"instruction": "สร้างเว็บไซต์", "model": "deepseek-r1:7b", "run_command": False})
+        self.assertEqual(response.status_code, 200, response.text)
+        result = response.json()
         self.assertEqual(result["status"], "completed")
         self.assertEqual(result["attempts"], 3)
         self.assertIn("styles.css", model.await_args_list[1].args[0].message)
@@ -457,7 +508,7 @@ class WorkspaceTests(unittest.TestCase):
                     "history": [{"role": "user", "content": "อยากทำแอปการศึกษา"}],
                 },
             )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.text)
         self.assertIn("นักเรียนมัธยม", model.await_args.args[0].message)
         self.assertEqual(model.await_args.args[0].history[0]["content"], "อยากทำแอปการศึกษา")
         self.assertEqual(response.json()["reply"], reply["reply"])
@@ -527,7 +578,7 @@ class WorkspaceTests(unittest.TestCase):
                 f"/api/projects/{project_id}/workspace/agent",
                 json={"instruction": "สร้างเว็บไซต์พร้อมใช้งาน", "model": "demo:latest", "run_command": True},
             )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.text)
         result = response.json()
         self.assertEqual(result["status"], "completed")
         self.assertEqual(result["attempts"], 2)
