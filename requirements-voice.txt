@@ -10,5 +10,5 @@ pynput==1.8.2
 scikit-learn==1.9.1
 sklearn-crfsuite==0.5.0
 SpeechRecognition==3.17.0
-tltk==1.10
+tltk==1.11
 unicode-rbnf==2.4.1
