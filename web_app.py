@@ -89,7 +89,9 @@ from web_store import (
 PROJECT_ROOT = Path(__file__).resolve().parent
 WEB_ROOT = PROJECT_ROOT / "web"
 OLLAMA_TAGS_URL = OLLAMA_URL.rsplit("/api/generate", 1)[0] + "/api/tags"
+WEB_HOST = os.getenv("WEB_HOST", "127.0.0.1").strip()
 WEB_TOKEN = os.getenv("HERMES_WEB_TOKEN", "").strip()
+COMMAND_EXECUTION_ENABLED = os.getenv("HERMES_ENABLE_COMMANDS", "false").strip().lower() in {"1", "true", "yes", "on"}
 MAX_HISTORY_ITEMS = 24
 AUDIO_DIR = PROJECT_ROOT / "data" / "audio"
 WORKSPACE_ROOT = Path(os.getenv("HERMES_WORKSPACE_ROOT", PROJECT_ROOT / "data" / "workspaces")).resolve()
@@ -99,6 +101,12 @@ MAX_RUN_OUTPUT_BYTES = 200_000
 MAX_BUILD_CONTEXT_CHARS = 6_000
 MAX_BUILD_ATTEMPTS = 3
 DEFAULT_RUN_COMMANDS = {"python", "python3", "node", "npm", "pytest"}
+LOOPBACK_HOSTS = {"127.0.0.1", "::1", "localhost"}
+SENSITIVE_AUDIT_KEY = re.compile(r"(?i)(?:api[_-]?key|authorization|cookie|pass(?:word)?|secret|token)")
+SENSITIVE_INLINE_VALUE = re.compile(
+    r"(?i)((?:api[_-]?key|authorization|cookie|pass(?:word)?|secret|token)\s*[:=]\s*)([^\s,;]+)"
+)
+BEARER_VALUE = re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]+")
 RUNTIME_PROVIDERS: dict[str, dict] = {}
 
 # ชื่อความสามารถที่แสดงใน Web UI ช่วยให้เลือกโมเดลจากงานที่ต้องการได้ทันที
@@ -212,7 +220,7 @@ class RunCommandRequest(BaseModel):
 class BuildAgentRequest(BaseModel):
     instruction: str = Field(min_length=1, max_length=4000)
     model: str = Field(default="auto", max_length=120)
-    run_command: bool = True
+    run_command: bool = False
 
 
 class BuildAssistantMessage(BaseModel):
@@ -309,6 +317,18 @@ def clean_api_provider(request: ApiProviderRequest) -> dict:
 def check_token(token: str | None) -> None:
     if WEB_TOKEN and token != WEB_TOKEN:
         raise HTTPException(status_code=401, detail="Invalid web token")
+
+
+def validate_runtime_security(host: str = WEB_HOST, token: str = WEB_TOKEN) -> None:
+    """Fail closed when a network-visible server has no authentication token."""
+    normalized = host.strip().lower().strip("[]")
+    if normalized not in LOOPBACK_HOSTS and not token:
+        raise RuntimeError(
+            "HERMES_WEB_TOKEN is required when WEB_HOST is not a loopback address"
+        )
+
+
+validate_runtime_security()
 
 
 def installed_models() -> list[str]:
@@ -692,16 +712,34 @@ def checkpoint_workspace(project_id: str, label: str) -> int:
     return history.checkpoint(label).revision
 
 
+def redact_audit_value(value: Any, key: str = "") -> Any:
+    """Recursively redact secrets before an audit payload is serialized."""
+    if key and SENSITIVE_AUDIT_KEY.search(key):
+        return "[redacted]"
+    if isinstance(value, dict):
+        return {str(item_key): redact_audit_value(item_value, str(item_key)) for item_key, item_value in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [redact_audit_value(item) for item in value]
+    if isinstance(value, str):
+        value = BEARER_VALUE.sub(r"\1[redacted]", value)
+        return SENSITIVE_INLINE_VALUE.sub(r"\1[redacted]", value)
+    return value
+
+
+def bounded_audit_payload(payload: dict[str, Any], limit: int = 8000) -> dict[str, Any]:
+    redacted = redact_audit_value(payload)
+    encoded = json.dumps(redacted, ensure_ascii=False, default=str)
+    if len(encoded) <= limit:
+        return redacted
+    return {"truncated": True, "preview": encoded[: limit - 100] + "…"}
+
+
 def record_audit_event(project_id: str, event: str, payload: dict[str, Any]) -> None:
-    """Append a bounded local audit record with basic secret redaction."""
+    """Append a bounded local audit record after recursive secret redaction."""
     root = project_workspace(project_id, create=True) / ".bth-create"
     root.mkdir(parents=True, exist_ok=True)
-    safe = json.dumps(payload, ensure_ascii=False, default=str)
-    safe = re.sub(r"(?i)(api[_-]?key|token|secret|password)\s*[:=]\s*[^,}\s]+", r"\1: [redacted]", safe)
-    if len(safe) > 8000:
-        safe = safe[:8000] + "…"
     with (root / "audit.jsonl").open("a", encoding="utf-8") as stream:
-        stream.write(json.dumps({"timestamp": time.time(), "event": event, "payload": json.loads(safe)}, ensure_ascii=False) + "\n")
+        stream.write(json.dumps({"timestamp": time.time(), "event": event, "payload": bounded_audit_payload(payload)}, ensure_ascii=False) + "\n")
 
 
 def security_audit_workspace(project_id: str) -> dict:
@@ -1143,10 +1181,17 @@ def _limit_child_process() -> None:
     resource.setrlimit(resource.RLIMIT_CPU, (60, 60))
     resource.setrlimit(resource.RLIMIT_FSIZE, (10_000_000, 10_000_000))
     resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
-    resource.setrlimit(resource.RLIMIT_NPROC, (32, 32))
+    # RLIMIT_NPROC is intentionally not changed: Linux counts every process and
+    # thread owned by the service user, including Ollama and the parent server.
+    # A child-specific value can therefore crash Node/V8 before it checks code.
 
 
-def parse_run_command(value: str) -> list[str]:
+def parse_run_command(value: str, *, require_opt_in: bool = True) -> list[str]:
+    if require_opt_in and not COMMAND_EXECUTION_ENABLED:
+        raise HTTPException(
+            status_code=403,
+            detail="Command execution is disabled. Set HERMES_ENABLE_COMMANDS=true to opt in.",
+        )
     try:
         command = shlex.split(value)
     except ValueError as error:
@@ -1160,9 +1205,9 @@ def parse_run_command(value: str) -> list[str]:
     return command
 
 
-def run_workspace_command(project_id: str, request: RunCommandRequest) -> dict:
+def run_workspace_command(project_id: str, request: RunCommandRequest, *, trusted_internal: bool = False) -> dict:
     root = project_workspace(project_id, create=True)
-    command = parse_run_command(request.command)
+    command = parse_run_command(request.command, require_opt_in=not trusted_internal)
     started = time.monotonic()
     environment = {
         "PATH": os.getenv("PATH", "/usr/local/bin:/usr/bin:/bin"),
@@ -1555,7 +1600,12 @@ Output complete {target_file} now:"""
                 issues.extend(await asyncio.to_thread(validate_web_preview, project_id))
             for file in prepared:
                 if file.path.endswith(".js"):
-                    checked = await asyncio.to_thread(run_workspace_command, project_id, RunCommandRequest(command="node --check " + shlex.quote(file.path)))
+                    checked = await asyncio.to_thread(
+                        run_workspace_command,
+                        project_id,
+                        RunCommandRequest(command="node --check " + shlex.quote(file.path)),
+                        trusted_internal=True,
+                    )
                     if checked["exit_code"] != 0:
                         issues.append(f"JavaScript syntax: {file.path}: {checked['stderr'][:1500]}")
         if target_file and not issues:
@@ -2186,8 +2236,9 @@ async def websocket_chat(websocket: WebSocket):
 if __name__ == "__main__":
     import uvicorn
 
+    validate_runtime_security()
     uvicorn.run(
         "web_app:app",
-        host=os.getenv("WEB_HOST", "127.0.0.1"),
+        host=WEB_HOST,
         port=int(os.getenv("WEB_PORT", "8080")),
     )

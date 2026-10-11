@@ -50,13 +50,13 @@ load_dotenv()
 # ==================== การตั้งค่า (แก้ไขได้ผ่านไฟล์ .env โดยไม่ต้องแก้โค้ด) ====================
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 MY_USER_ID = int(os.getenv("MY_USER_ID", "0"))
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
-MODEL_NAME = os.getenv("MODEL_NAME", "hermes-agent")  # ชื่อโมเดลที่สร้างจาก Modelfile (ดู README)
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
+MODEL_NAME = os.getenv("MODEL_NAME", "gemma3:4b")
 
-# พารามิเตอร์ที่จูนสำหรับ Acer Nitro 5: i5-8300H (4 core/8 thread) / GTX1050Ti 4GB / RAM 32GB
-NUM_CTX = int(os.getenv("NUM_CTX", "4096"))     # context window — ลดลงถ้า RAM ตึง
-NUM_THREAD = int(os.getenv("NUM_THREAD", "4"))  # ใช้ physical core (ไม่ใช่ thread) ของ CPU
-NUM_GPU = int(os.getenv("NUM_GPU", "20"))       # จำนวน layer ที่ยัดใส่ GPU — ต้องทดสอบหาค่าที่พอดี VRAM
+# Repository defaults are conservative and portable. Host-specific tuning belongs in .env.
+NUM_CTX = int(os.getenv("NUM_CTX", "8192"))
+NUM_THREAD = int(os.getenv("NUM_THREAD", "4"))
+NUM_GPU = int(os.getenv("NUM_GPU", "-1"))
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.7"))
 KEEP_ALIVE = os.getenv("KEEP_ALIVE", "30m")     # กันโมเดลถูก unload ทำให้ต้องโหลดใหม่ทุกครั้ง
 SEARCH_MAX_RESULTS = int(os.getenv("SEARCH_MAX_RESULTS", "2"))
