@@ -700,7 +700,10 @@ async def answer_persistent(conversation_id: str, request: ChatRequest) -> dict:
 def project_workspace(project_id: str, create: bool = False) -> Path:
     if not get_project(project_id):
         raise HTTPException(status_code=404, detail="Project not found")
-    root = WORKSPACE_ROOT / project_id
+    # Windows can expose the same temporary directory through both its long
+    # path and an 8.3 alias (for example runneradmin vs RUNNER~1). Returning a
+    # canonical path here keeps every later ``relative_to`` comparison stable.
+    root = (WORKSPACE_ROOT / project_id).resolve(strict=False)
     if create:
         root.mkdir(parents=True, exist_ok=True)
     return root
