@@ -1228,6 +1228,14 @@ def run_workspace_command(project_id: str, request: RunCommandRequest, *, truste
         "PYTHONUNBUFFERED": "1",
         "HOME": str(root),
     }
+    if os.name == "nt":
+        # Node and Python need these OS locations on Windows. Copy only this
+        # allowlist so provider keys and other service secrets never reach a
+        # workspace command through the inherited process environment.
+        for name in ("SYSTEMROOT", "WINDIR", "TEMP", "TMP", "PATHEXT", "COMSPEC"):
+            value = os.getenv(name)
+            if value:
+                environment[name] = value
     timed_out = False
     with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
         try:
