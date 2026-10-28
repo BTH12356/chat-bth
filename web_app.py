@@ -7,11 +7,11 @@ import html
 import json
 import os
 import re
-import resource
 import shlex
 import shutil
 import signal
 import subprocess
+import sys
 import tempfile
 import time
 import uuid
@@ -19,6 +19,11 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote, unquote, urlsplit
+
+try:
+    import resource
+except ImportError:  # pragma: no cover - exercised by the Windows CI job
+    resource = None
 
 import requests
 from fastapi import FastAPI, Header, HTTPException, Query, WebSocket, WebSocketDisconnect
@@ -1178,6 +1183,8 @@ def delete_workspace_file(project_id: str, relative_path: str) -> None:
 
 
 def _limit_child_process() -> None:
+    if resource is None:
+        return
     resource.setrlimit(resource.RLIMIT_CPU, (60, 60))
     resource.setrlimit(resource.RLIMIT_FSIZE, (10_000_000, 10_000_000))
     resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
@@ -1208,6 +1215,8 @@ def parse_run_command(value: str, *, require_opt_in: bool = True) -> list[str]:
 def run_workspace_command(project_id: str, request: RunCommandRequest, *, trusted_internal: bool = False) -> dict:
     root = project_workspace(project_id, create=True)
     command = parse_run_command(request.command, require_opt_in=not trusted_internal)
+    if os.name == "nt" and command[0] in {"python", "python3"}:
+        command[0] = sys.executable
     started = time.monotonic()
     environment = {
         "PATH": os.getenv("PATH", "/usr/local/bin:/usr/bin:/bin"),
@@ -1219,22 +1228,26 @@ def run_workspace_command(project_id: str, request: RunCommandRequest, *, truste
     timed_out = False
     with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
         try:
-            process = subprocess.Popen(
-                command,
-                cwd=root,
-                env=environment,
-                stdout=stdout_file,
-                stderr=stderr_file,
-                start_new_session=True,
-                preexec_fn=_limit_child_process,
-            )
-        except OSError as error:
+            popen_options = {
+                "cwd": root,
+                "env": environment,
+                "stdout": stdout_file,
+                "stderr": stderr_file,
+                "start_new_session": True,
+            }
+            if os.name != "nt":
+                popen_options["preexec_fn"] = _limit_child_process
+            process = subprocess.Popen(command, **popen_options)
+        except (OSError, ValueError) as error:
             raise HTTPException(status_code=400, detail=f"Cannot start command: {error}") from error
         try:
             exit_code = process.wait(timeout=request.timeout)
         except subprocess.TimeoutExpired:
             timed_out = True
-            os.killpg(process.pid, signal.SIGKILL)
+            if os.name == "nt":
+                process.kill()
+            else:
+                os.killpg(process.pid, signal.SIGKILL)
             process.wait()
             exit_code = 124
         stdout_file.seek(0)
@@ -1254,7 +1267,7 @@ def run_workspace_command(project_id: str, request: RunCommandRequest, *, truste
         "timed_out": timed_out,
         "truncated": stdout_truncated or stderr_truncated,
         "duration_ms": round((time.monotonic() - started) * 1000),
-        "isolation": "process-limits",
+        "isolation": "process-limits" if resource is not None else "process-boundary",
     }
 
 
