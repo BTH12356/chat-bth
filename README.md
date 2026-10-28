@@ -98,7 +98,7 @@ flowchart LR
 
 ### เตรียมเสียงแบบ local
 
-Voice Agent เป็น optional dependency และไม่ถูกรวมใน CI หลัก:
+Voice Agent เป็น optional dependency และไม่ถูกติดตั้งเต็มชุดใน CI หลัก แต่ CI มี job แยกสำหรับตรวจ dependency resolution, pandas และข้อมูลภาษาไทย:
 
     ./venv/bin/pip install -r requirements-voice.txt
 
@@ -213,7 +213,7 @@ Google AI Studio ใช้ native generateContent API โดยเลือก�
     ./venv/bin/python -m unittest discover -s tests -v
     ./venv/bin/python -m tests.preview_fixture
 
-ผลล่าสุดบน Dell: Python compile ผ่าน, `node --check` ผ่าน และ automated tests ผ่าน 135/135 รายการ GitHub Actions รัน checks ชุดเดียวกันทุก push และ pull request ส่วน Voice Agent แยกออกจาก CI หลักเพราะต้องใช้ native audio/GPU dependencies
+ผลล่าสุดบน Windows: Python compile ผ่าน, `node --check` ผ่าน และ automated tests ผ่าน 137/137 รายการ GitHub Actions รัน matrix บน Ubuntu/Windows กับ Python 3.12/3.13 ทุก push และ pull request พร้อม job แยกที่ตรวจ optional voice dependency graph และ smoke test pandas 3.0.6 กับข้อความภาษาไทย ส่วนการจับเสียง, Piper/FFmpeg และ GPU inference ยังต้องทดสอบกับอุปกรณ์จริง
 
 ## โครงสร้างโปรเจกต์
 
